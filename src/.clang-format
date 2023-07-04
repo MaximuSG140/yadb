@@ -1,0 +1,3 @@
+BasedOnStyle: Chromium
+InsertBraces: true
+InsertNewlineAtEOF: true
