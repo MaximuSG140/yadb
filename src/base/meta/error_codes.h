@@ -1,13 +1,13 @@
-#ifndef YADB_ERROR_CODES_H
-#define YADB_ERROR_CODES_H
+#ifndef BASE_ERROR_CODES_H_
+#define BASE_ERROR_CODES_H_
 
-namespace base{
-    namespace meta{
-        enum class ErrorCodes{
-            // format - error_code: description
-            1 = InvalidKeyword
-        };
-    }
+namespace base {
+namespace meta {
+enum class ErrorCodes {
+  // format - error_code: description
+  1 = InvalidKeyword
+};
+}
 }
 
-#endif //YADB_ERROR_CODES_H
+#endif //BASE_ERROR_CODES_H_
