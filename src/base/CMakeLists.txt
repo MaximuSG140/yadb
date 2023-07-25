@@ -12,7 +12,7 @@ set(base_sources
     "concepts/callable.h"
     "functional/bind.h"
     "functional/callback.h"
-    )
+        ../query/parser/token.h ../query/token.h ../query/token.h ../query/token.cpp)
 
 set(base_unittests_sources
     )
