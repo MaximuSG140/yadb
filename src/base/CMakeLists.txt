@@ -12,7 +12,7 @@ set(base_sources
     "concepts/callable.h"
     "functional/bind.h"
     "functional/callback.h"
-    )
+        meta/error_codes.h)
 
 set(base_unittests_sources
     )
