@@ -9,8 +9,8 @@ include_directories(.)
 
 project(yadb CXX)
 
+add_subdirectory(third_party)
 add_subdirectory(base)
 add_subdirectory(query)
 add_subdirectory(server)
 add_subdirectory(scheduler)
-add_subdirectory(third_party)

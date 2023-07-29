@@ -1,5 +1,5 @@
-#ifndef BASE_FUNCTIONAL_FUNCTOR_HOLDER_H_
-#define BASE_FUNCTIONAL_FUNCTOR_HOLDER_H_
+#ifndef BASE_FUNCTIONAL_CALLABLE_HOLDER_H_
+#define BASE_FUNCTIONAL_CALLABLE_HOLDER_H_
 
 #include <memory>
 
@@ -43,4 +43,4 @@ MakeFunctorHolder(FunctorType&& functor) {
 
 }  // namespace base
 
-#endif  // BASE_FUNCTIONAL_FUNCTOR_HOLDER_H_
+#endif  // BASE_FUNCTIONAL_CALLABLE_HOLDER_H_

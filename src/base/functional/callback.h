@@ -4,29 +4,29 @@
 #include <memory>
 #include <type_traits>
 
-#include "base/functional/functor_holder.h"
-#include "functor_holder.h"
+#include "base/functional/callable_holder.h"
+#include "base/functional/callback_forward.h"
+#include "base/functional/callback_traits.h"
 
 namespace base {
 
-template<typename Signature>
-class OnceCallback;
+namespace internal {
 
-
-// This class is used to achieve callback functionality.
-// It wraps any functor, which could be invoked with arguments,
-// specified in ArgumentTypes template argument, and will return
-// object of type ReturnType.
-template<typename ReturnType, typename... ArgumentTypes>
-class OnceCallback<ReturnType(ArgumentTypes...)> {
+template <typename CallbackTraits,
+          typename ReturnType,
+          typename... ArgumentTypes>
+class CallbackBase {
  public:
   template <typename FunctorType>
-  explicit OnceCallback(FunctorType&& functor)
-      : holder_(MakeFunctorHolder<FunctorType, ReturnType, ArgumentTypes...>(
-            std::forward<FunctorType>(functor))) {}
+  explicit CallbackBase(FunctorType&& functor)
+      : holder_(CallbackTraits::MakeCallableHolder(
+            std::forward<FunctorType>(functor))) {
+  }
 
-  ReturnType Invoke(ArgumentTypes&&... args) && {
-    auto holder = std::move(holder_);
+ protected:
+  // Invokes callback with given arguments.
+  ReturnType Invoke(ArgumentTypes&&... args) {
+    auto holder = CallbackTraits::GetCallableHolderForInvoke(holder_);
     if (!holder) {
       return;
     }
@@ -35,7 +35,37 @@ class OnceCallback<ReturnType(ArgumentTypes...)> {
   }
 
  private:
-  std::unique_ptr<FunctorHolder<ReturnType, ArgumentTypes...>> holder_;
+  typename CallbackTraits::FunctionHolder holder_;
+};
+
+}  // namespace internal
+
+template <typename ReturnType, typename... ArgumentTypes>
+class OnceCallback<ReturnType(ArgumentTypes...)>
+    : public internal::CallbackBase<internal::CallbackTraits<
+          OnceCallback<ReturnType(ArgumentTypes...)>>> {
+ public:
+  using Base = internal::CallbackBase<
+      internal::CallbackTraits<OnceCallback<ReturnType(ArgumentTypes...)>>>;
+  using Base::Base;
+
+  ReturnType Invoke(ArgumentTypes&&... args) && {
+    return Base::Invoke(std::forward<ArgumentTypes>(args)...);
+  }
+};
+
+template <typename ReturnType, typename... ArgumentTypes>
+class RepeatingCallback<ReturnType(ArgumentTypes...)>
+    : public internal::CallbackBase<internal::CallbackTraits<
+          RepeatingCallback<ReturnType(ArgumentTypes...)>>> {
+ public:
+  using Base = internal::CallbackBase<
+      internal::CallbackTraits<RepeatingCallback<ReturnType(ArgumentTypes...)>>>;
+  using Base::Base;
+
+  ReturnType Invoke(ArgumentTypes&&... args) const& {
+    return Base::Invoke(std::forward<ArgumentTypes>(args)...);
+  }
 };
 
 }  // namespace base
